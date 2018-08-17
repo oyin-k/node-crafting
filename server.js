@@ -1,4 +1,4 @@
-let app = require('./practice');
+let app = require('./app');
 let port = process.env.port || 3000;
 
 let server = app.listen(port, () => {
