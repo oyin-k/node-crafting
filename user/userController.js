@@ -1,55 +1,45 @@
 const express = require('express');
 const router = express.Router();
-const bodyParser = require('body-parser');
-
-router.use(bodyParser.urlencoded({ extended: true }));
-router.use(bodyParser.json());
-
 const User = require('./user');
 
 //add a user
-router.post('/user', (req, res) => {
-    User.create({
-        name: req.body.name,
-        email: req.body.email,
-        password: req.body.password   
-    }, (err, user) => {
-        if(err) return res.status(500).send('There was a problem adding the information to the database.');
-        res.status(200).send(user);
-    });
+router.post('/user', (req, res, next) => {
+    User.create(req.body)
+        .then((user)=> {
+            res.send(user);
+        }).catch(next);
 });
 
 //get all users
-router.get('/users', (req, res) => {
-    User.find({}, (err, users) => {
-        if(err) return res.status(500).send('There was a problem finding the user.');
-        res.status(200).send(users);
-    });
+router.get('/users', (req, res, next) => {
+    User.find({})
+        .then((users) => {
+            res.send(users);
+        }).catch(next);
 });
 
 //get a single user
-router.get('/user/:id', (req, res) => {
-    User.findById(req.params.id, (err, user) => {
-        if(err) return res.status(500).send('There was a problem finding this user');
-        if(!user) return res.status(404).send("No user found.");
-        res.status(200).send(user);
-    });
+router.get('/user/:id', (req, res, next) => {
+    User.findById({_id: req.params.id})
+        .then((user) => {
+            res.send(user);
+        }).catch(next);
 });
 
 //update user
-router.put('/user/:id', (req, res) => {
-    User.findByIdAndUpdate(req.params.id, req.body, {new: true}, (err, user) => {
-        if(err) return res.status(500).send('There was a problem updating this user');
-        res.status(200).send(user);
-    });
+router.put('/user/:id', (req, res, next) => {
+    User.findByIdAndUpdate(req.params.id, req.body, {new: true})
+        .then((user) => {
+            res.send(user);
+        }).catch(next);
 });
 
 //delete
-router.delete('/user/:id', (req, res) => {
-    User.findByIdAndRemove(req.params.id, (err, user) => {
-        if(err) return res.status(500).send('There was a problem deleting the user');
-        res.status(200).send(`User: ${user.name} has been deleted`);
-    });
+router.delete('/user/:id', (req, res, next) => {
+    User.findByIdAndRemove({_id: req.params.id})
+        .then((user) => {
+            res.send(user);
+        }).catch(next);
 });
 
 module.exports = router;
