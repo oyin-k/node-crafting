@@ -1,14 +1,14 @@
-let express = require('express');
-let router = express.Router();
-let bodyParser = require('body-parser');
+const express = require('express');
+const router = express.Router();
+const bodyParser = require('body-parser');
 
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use(bodyParser.json());
 
-let User = require('./user');
+const User = require('./user');
 
 //add a user
-router.post('/', (req, res) => {
+router.post('/user', (req, res) => {
     User.create({
         name: req.body.name,
         email: req.body.email,
@@ -20,7 +20,7 @@ router.post('/', (req, res) => {
 });
 
 //get all users
-router.get('/', (req, res) => {
+router.get('/users', (req, res) => {
     User.find({}, (err, users) => {
         if(err) return res.status(500).send('There was a problem finding the user.');
         res.status(200).send(users);
@@ -28,7 +28,7 @@ router.get('/', (req, res) => {
 });
 
 //get a single user
-router.get('/:id', (req, res) => {
+router.get('/user/:id', (req, res) => {
     User.findById(req.params.id, (err, user) => {
         if(err) return res.status(500).send('There was a problem finding this user');
         if(!user) return res.status(404).send("No user found.");
@@ -37,7 +37,7 @@ router.get('/:id', (req, res) => {
 });
 
 //update user
-router.put('/:id', (req, res) => {
+router.put('/user/:id', (req, res) => {
     User.findByIdAndUpdate(req.params.id, req.body, {new: true}, (err, user) => {
         if(err) return res.status(500).send('There was a problem updating this user');
         res.status(200).send(user);
@@ -45,7 +45,7 @@ router.put('/:id', (req, res) => {
 });
 
 //delete
-router.delete('/:id', (req, res) => {
+router.delete('/user/:id', (req, res) => {
     User.findByIdAndRemove(req.params.id, (err, user) => {
         if(err) return res.status(500).send('There was a problem deleting the user');
         res.status(200).send(`User: ${user.name} has been deleted`);

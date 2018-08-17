@@ -1,9 +1,9 @@
-let express = require('express');
-let app = express();
-let db = require('./db');
-let UserController = require('./user/userController');
+const express = require('express');
+const app = express();
+const db = require('./db');
+const UserController = require('./user/userController');
 
 
-app.use('/users', UserController);
+app.use('/api', UserController);
 
 module.exports = app;
