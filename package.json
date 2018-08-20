@@ -4,7 +4,7 @@
   "description": "just tinkering",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha --timeout 10000"
   },
   "author": "Oyetunmibi Oyinkansola <oyink7@gmail.com>",
   "license": "ISC",
@@ -14,6 +14,8 @@
     "mongoose": "^5.2.8"
   },
   "devDependencies": {
+    "chai": "^4.1.2",
+    "chai-http": "^4.0.0",
     "mocha": "^5.2.0"
   }
 }
