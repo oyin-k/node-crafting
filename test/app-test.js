@@ -1,21 +1,35 @@
 const chai = require('chai');
 const chaiHttp = require('chai-http');
+const mongoose = require('mongoose');
 const app = require('../app');
 
 let should = chai.should();
 
+let deleteAfterRun = false;
+
 chai.use(chaiHttp);
 
-// describe('NodeAPI', () => {
-//     it('no valid route', (done) => {
-//         chai.request(app)
-//             .post('/api/users')
-//             .end((err, res) => {
-//                 res.should.have.status(404);
-//                 done();
-//             })
-//     })
-// })
+before((done) => {
+
+    //test if database is populated
+    var User = mongoose.model('User');
+    User.estimatedDocumentCount({})
+        .then((count) => {
+            if (count === 0) {
+                //no content so safe to delete
+                deleteAfterRun = true;
+                //add test data
+                return app.ensureTestData();
+            } else {
+                console.log('Test database already exists');
+            }
+        })
+        .then(() => {
+            done();
+        });
+
+});
+
 
 describe('/GET users', () => {
     it('it should GET all the users', (done) => {
@@ -57,10 +71,17 @@ describe('/POST user', () => {
             .end((err, res) => {
                 res.should.have.status(200);
                 res.body.should.have.a('object');
-                // res.body.user.should.have.property('name');
-                // res.body.user.should.have.property('email');
-                // res.body.user.should.have.property('password');
                 done();
             })
-    })
+    });
 })
+
+after((done) => {
+    if (deleteAfterRun) {
+        console.log('Deleting test database');
+        mongoose.connection.db.dropDatabase(done);
+    } else {
+        console.log('Not deleting test database because it already existed before run');
+        done();
+    }
+});
